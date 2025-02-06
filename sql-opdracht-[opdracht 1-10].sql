@@ -44,3 +44,8 @@ SELECT CompanyName, ContactName, Country
 FROM customers
 WHERE Country= 'Buenos Aires';
 
+--opdracht 8--
+SELECT ProductName, UnitPrice, QuantityPerUnit, UnitsInStock
+FROM products
+WHERE UnitsInStock = 0;
+
