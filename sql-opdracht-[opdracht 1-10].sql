@@ -38,3 +38,8 @@ LIMIT 10;
 SELECT LOWER(CustomerID) AS ID
 FROM customers;
 
+--opdracht 6--
+SELECT CompanyName, Fax, Phone, Country, HomePage
+FROM suppliers
+ORDER BY Country Desc, CompanyName ASC;
+
