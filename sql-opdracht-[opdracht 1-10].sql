@@ -39,3 +39,8 @@ SELECT CompanyName, Fax, Phone, Country, HomePage
 FROM suppliers
 ORDER BY Country Desc, CompanyName ASC;
 
+--opdracht 7--
+SELECT CompanyName, ContactName, Country
+FROM customers
+WHERE Country= 'Buenos Aires';
+
