@@ -26,3 +26,10 @@ ORDER BY
 SELECT UPPER(FirstName) AS FirstName, UPPER(LastName) AS LastName, HireDate 
 FROM employees 
 ORDER BY Hiredate ASC;
+
+--opdracht 4--
+
+SELECT OrderID, OrderDate, ShippedDate, CustomerID, Freight
+FROM orders
+ORDER BY Freight DESC
+LIMIT 10;
