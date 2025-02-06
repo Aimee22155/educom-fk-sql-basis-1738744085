@@ -35,10 +35,20 @@ FROM orders
 WHERE ShipPostalCode LIKE '98124%';
 
 --opdracht 27--
+SELECT ContactName, ContactTitle, CompanyName
+FROM Customers
+WHERE ContactTitle NOT LIKE '%Sales%'
 
 --opdracht 28--
-
+SELECT LastName, FirstName, City
+FROM Employees
+WHERE City <> 'Seattle'
+    
 --opdracht 29--
+SELECT CompanyName, ContactTitle, City, Country
+FROM Customers
+WHERE (Country = 'Mexico') 
+   OR (Country = 'Spain' AND City <> 'Madrid')
 
 --opdracht 30--
 
