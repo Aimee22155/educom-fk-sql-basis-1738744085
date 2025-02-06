@@ -33,3 +33,8 @@ SELECT OrderID, OrderDate, ShippedDate, CustomerID, Freight
 FROM orders
 ORDER BY Freight DESC
 LIMIT 10;
+
+--opdracht 5--
+SELECT LOWER(CustomerID) AS ID
+FROM customers;
+
