@@ -40,12 +40,17 @@ FROM suppliers
 ORDER BY Country Desc, CompanyName ASC;
 
 --opdracht 7--
-SELECT CompanyName, ContactName, Country
+SELECT CompanyName, ContactName, City
 FROM customers
-WHERE Country= 'Buenos Aires';
+WHERE City= 'Buenos Aires';
 
 --opdracht 8--
 SELECT ProductName, UnitPrice, QuantityPerUnit, UnitsInStock
 FROM products
 WHERE UnitsInStock = 0;
+
+--opdracht 9--
+SELECT ContactName, Address, City, Country
+FROM customers
+WHERE Country NOT IN ('Germany', 'Mexico', 'Spain'); 
 
