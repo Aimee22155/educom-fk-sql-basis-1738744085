@@ -1,4 +1,12 @@
+--Opdracht 1--
 
+SELECT
+    CategoryName,
+    Description
+FROM
+    categories
+ORDER BY
+    CategoryName
 
 
 --Opdracht 2--
