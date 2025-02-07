@@ -51,4 +51,5 @@ WHERE (Country = 'Mexico')
    OR (Country = 'Spain' AND City <> 'Madrid')
 
 --opdracht 30--
-
+SELECT CONCAT(FirstName, Lastname, 'can be reached at', ' ', 'x', Extension) AS 'Contactinfo'
+FROM employees
