@@ -42,12 +42,11 @@ WHERE p.CategoryID = 5;
 DROP TABLE shippers_duplicate;
 
 --opdracht 48--
-SELECT 
-    LastName, 
-    FirstName, 
+ SELECT
+    LastName,
+    FirstName,
     Title,
-    BirthDate,
-    DATEDIFF(YEAR, BirthDate, GETDATE()) AS Age
+    (YEAR(CURDATE())-YEAR(BirthDate)) Age
 FROM employees;
 
 --opdracht 49--
