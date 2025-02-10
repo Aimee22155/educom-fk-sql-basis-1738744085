@@ -1,0 +1,37 @@
+Aanpassingen database:
+
+*bij alle tabellen "name" wijzigen naar de tabelnaam, bv: Brands: name --> Brand
+** koppeltabel toevoegen
+
+Brands:
+- FK Rubliek_id
+
+Cities:
+- FK commune_id + suppliers_id
+	
+
+commune:
+- FK ddistrict_id
+
+Companies:
+- FK brands_id
+
+Contacts:
+- FK Supplier_id + Department_id
+
+Detaildefs:
+- FK Detailgroups_id
+
+Districts:
+- FK Country_id
+
+Hitcount:
+FK toevoegen: supplier_id
+
+Properties:
+Content --> beter invullen?
+FK Supplier-id + property_id
+
+Suppliers:
+Nieuwe tabel met adresgegevens?
+P.adres, P.postcode, P.city kunnen weg??
