@@ -1,5 +1,3 @@
-ALTER TABLE `mhl_districts` ADD FOREIGN KEY (`country_ID`) REFERENCES `mhl_countries`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-ALTER TABLE `mhl_cities` ADD FOREIGN KEY (`commune_ID`) REFERENCES `mhl_communes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`group_ID`) REFERENCES `mhl_detailgroups`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
