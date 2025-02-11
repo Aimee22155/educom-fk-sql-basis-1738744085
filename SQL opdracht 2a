@@ -3,13 +3,13 @@
 Propertytype:
 INSERT INTO mhl_propertytype (id)
 VALUE (0);
-
+_______________________________________________________________________________________________
 Detaildefs:
 UPDATE mhl_detaildefs
 SET propertytype_ID='470'
 WHERE mhl_detaildefs.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
-OR mhl_detaildefs.propertype_ID IS NULL;
-
+OR mhl_detaildefs.propertytype_ID IS NULL;
+_______________________________________________________________________________________________
 ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`group_ID`) REFERENCES `mhl_detailgroups`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION; 
 ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -20,18 +20,23 @@ SELECT supplier_ID
 FROM mhl_yn_properties
 WHERE mhl_yn_properties.supplier_ID NOT IN (SELECT id FROM mhl_suppliers)
 OR mhl_yn_properties.supplier_ID IS NULL;
-
+_______________________________________________________________________________________________
 mhl_suppliers:
 INSERT INTO mhl_suppliers (id)
 SELECT DISTINCT pro.supplier_ID
 FROM mhl_yn_properties pro
 LEFT JOIN mhl_suppliers sup ON pro.supplier_ID = sup.id
 WHERE sup.id IS NULL;
-
+_______________________________________________________________________________________________
 UPDATE mhl_yn_properties
 SET propertytype_ID='470'
 WHERE mhl_yn_properties.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
 OR mhl_yn_properties.propertytype_ID IS NULL;
+_______________________________________________________________________________________________
+ALTER TABLE `mhl_yn_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-
-3. Foreign Key voor
+3. Foreign Key voor mhl_properties
+UPDATE mhl_properties
+SET propertytype_ID='470'
+WHERE mhl_properties.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
+OR mhl_properties.propertytype_ID IS NULL;
