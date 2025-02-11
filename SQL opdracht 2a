@@ -1,0 +1,1 @@
+ALTER TABLE `mhl_districts` ADD FOREIGN KEY (`country_ID`) REFERENCES `mhl_countries`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
