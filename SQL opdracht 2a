@@ -1,3 +1,6 @@
+SELECT * FROM mhl_detaildefs
+WHERE mhl_detaildefs.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
+OR mhl_detaildefs.propertytype_ID IS NULL
 _______________________________________________________________________________________________
 1. Foreign Key voor Detaildefs:
 
@@ -45,3 +48,146 @@ WHERE mhl_properties.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
 OR mhl_properties.propertytype_ID IS NULL;
 
 ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+mhl_suppliers:
+INSERT INTO mhl_suppliers (id)
+SELECT DISTINCT pro.supplier_ID
+FROM mhl_properties pro
+LEFT JOIN mhl_suppliers sup ON pro.supplier_ID = sup.id
+WHERE sup.id IS NULL;
+
+ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+_______________________________________________________________________________________________
+4. Foreign Key voor mhl_hitcount
+
+INSERT INTO mhl_suppliers (id) 
+SELECT DISTINCT hit.supplier_ID 
+FROM mhl_hitcount hit 
+LEFT JOIN mhl_suppliers sup ON hit.supplier_ID = sup.id 
+WHERE sup.id IS NULL;
+
+ALTER TABLE `mhl_hitcount` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+_______________________________________________________________________________________________
+5. Foreign Key voor mhl_suppliers_mhl_rubriek_view
+
+INSERT INTO mhl_rubrieken (id) 
+SELECT DISTINCT srv.mhl_rubriek_view_ID 
+FROM mhl_suppliers_mhl_rubriek_view srv 
+LEFT JOIN mhl_rubrieken rub ON srv.mhl_rubriek_view_ID = rub.id 
+WHERE rub.id IS NULL;
+
+ALTER TABLE `mhl_suppliers_mhl_rubriek_view` ADD FOREIGN KEY (`mhl_rubriek_view_ID`) REFERENCES `mhl_rubrieken`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+INSERT INTO mhl_suppliers (id) 
+SELECT DISTINCT srv.mhl_suppliers_ID
+FROM mhl_suppliers_mhl_rubriek_view srv 
+LEFT JOIN mhl_suppliers sup ON srv.mhl_suppliers_ID = sup.id 
+WHERE sup.id IS NULL;
+
+ALTER TABLE `mhl_suppliers_mhl_rubriek_view` ADD FOREIGN KEY (`mhl_suppliers_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+_______________________________________________________________________________________________
+6. Foreign Key voor mhl_suppliers (mhl_companies)
+INSERT INTO mhl_company(id)
+VALUE (0);
+
+UPDATE mhl_suppliers
+SET company='211'
+WHERE mhl_suppliers.company NOT IN (SELECT id FROM mhl_companies)
+OR mhl_suppliers.company IS NULL;
+
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`company`) REFERENCES `mhl_companies`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+_______________________________________________________________________________________________
+7. Foreign Key voor mhl_contacts
+
+ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`department`) REFERENCES `mhl_departments`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+SELECT * 
+FROM mhl_contacts 
+WHERE mhl_contacts.supplier_ID NOT IN (SELECT id FROM mhl_suppliers) 
+OR mhl_contacts.supplier_ID IS NULL;
+
+INSERT INTO mhl_suppliers (id) 
+SELECT DISTINCT con.supplier_ID
+FROM mhl_contacts con
+LEFT JOIN mhl_suppliers sup ON con.supplier_ID = sup.id 
+WHERE sup.id IS NULL;
+
+
+_______________________________________________________________________________________________
+8. Foreign Key voor mhl_membertype
+
+INSERT INTO mhl_membertypes (id)
+VALUE (0);
+
+UPDATE mhl_suppliers
+SET membertype='11'
+WHERE mhl_suppliers.membertype NOT IN (SELECT id FROM mhl_membertypes)
+OR mhl_suppliers.membertype IS NULL;
+
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`membertype`) REFERENCES `mhl_membertypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+_______________________________________________________________________________________________
+9. Foreign Key voor mhl_suppliers (mhl_cities)
+
+// SELECT id, city_ID FROM mhl_suppliers WHERE mhl_suppliers.city_ID NOT IN (SELECT id FROM mhl_cities)  OR mhl_suppliers.city_ID IS NULL; //
+
+INSERT INTO mhl_cities (id) 
+SELECT DISTINCT sup.city_ID
+FROM mhl_suppliers sup
+LEFT JOIN mhl_cities cit ON sup.city_ID = cit.id 
+WHERE cit.id IS NULL;
+
+UPDATE mhl_suppliers
+SET city_ID='5889'
+WHERE mhl_suppliers.city_ID NOT IN (SELECT id FROM mhl_cities)
+OR mhl_suppliers.city_ID IS NULL;
+
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`city_ID`) REFERENCES `mhl_cities`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+_______________________________________________________________________________________________
+10. Foreign Key voor mhl_city
+
+INSERT INTO mhl_communes (id)
+VALUE (0);
+
+UPDATE mhl_cities
+SET commune_ID='789'
+WHERE mhl_cities.commune_ID NOT IN (SELECT id FROM mhl_communes)
+OR mhl_cities.commune_ID IS NULL;
+
+INSERT INTO mhl_communes (id) 
+SELECT DISTINCT cit.commune_ID
+FROM mhl_cities cit
+LEFT JOIN mhl_communes com ON cit.commune_ID = com.id
+WHERE com.id IS NULL;
+
+ALTER TABLE `mhl_cities` ADD FOREIGN KEY (`commune_ID`) REFERENCES `mhl_communes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+___________________________________________________________________________________________
+11. Foreign Key voor mhl_communes
+
+INSERT INTO mhl_districts (id)
+VALUE (0);
+
+UPDATE mhl_communes
+SET district_ID='30'
+WHERE mhl_communes.district_ID NOT IN (SELECT id FROM mhl_districts)
+OR mhl_communes.district_ID IS NULL;
+
+ALTER TABLE `mhl_communes` ADD FOREIGN KEY (`district_ID`) REFERENCES `mhl_districts`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+
+
+
+
+
+_______________________________________________________________________________________________
+SELECT id, city_ID
+FROM mhl_suppliers
+WHERE mhl_suppliers.city_ID NOT IN (SELECT id FROM mhl_cities) 
+OR mhl_suppliers.city_ID IS NULL;
+
