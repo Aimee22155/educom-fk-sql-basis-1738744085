@@ -200,7 +200,7 @@ INSERT INTO mhl_cities (id, commune_ID)
 VALUE (0, 789);
 
 UPDATE mhl_suppliers
-SET p_city_ID='5896'
+SET p_city_ID='5892'
 WHERE mhl_suppliers.p_city_ID NOT IN (SELECT id FROM mhl_cities)
 OR mhl_suppliers.p_city_ID IS NULL;
 
