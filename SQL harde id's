@@ -4,7 +4,7 @@
 ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`department`) REFERENCES `mhl_departments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 INSERT INTO mhl_suppliers () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_suppliers);
 
 UPDATE mhl_contacts
 SET supplier_ID=@new_id
@@ -18,7 +18,7 @@ ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppl
 
 /*Propertytype:*/
 INSERT INTO mhl_propertytypes () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_propertytypes);
 
 /*Detaildefs:*/
 UPDATE mhl_detaildefs
@@ -96,8 +96,9 @@ ALTER TABLE `mhl_suppliers_mhl_rubriek_view` ADD FOREIGN KEY (`mhl_suppliers_ID`
 
 /*______________________________________________________________________________________________
 6. Foreign Key voor mhl_suppliers (mhl_companies)*/
+
 INSERT INTO mhl_companies () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_companies);
 
 UPDATE mhl_suppliers
 SET company=@new_id
@@ -110,7 +111,7 @@ ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`company`) REFERENCES `mhl_companie
 8. Foreign Key voor mhl_membertype:*/
 
 INSERT INTO mhl_membertypes () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_membertypes);
 
 UPDATE mhl_suppliers
 SET membertype=@new_id
@@ -139,7 +140,7 @@ ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`city_ID`) REFERENCES `mhl_cities`(
 10. Foreign Key voor mhl_city:*/
 
 INSERT INTO mhl_communes () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_communes);
 
 UPDATE mhl_cities
 SET commune_ID=@new_id
@@ -158,7 +159,7 @@ ALTER TABLE `mhl_cities` ADD FOREIGN KEY (`commune_ID`) REFERENCES `mhl_communes
 11. Foreign Key voor mhl_communes:*/
 
 INSERT INTO mhl_districts () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_districts);
 
 UPDATE mhl_communes
 SET district_ID=@new_id
@@ -172,7 +173,7 @@ ALTER TABLE `mhl_communes` ADD FOREIGN KEY (`district_ID`) REFERENCES `mhl_distr
 12. Foreign Key voor mhl_districts:*/
 
 INSERT INTO mhl_countries () VALUES ();
-SET @new_id = LAST_INSERT_ID();
+SET @new_id = (SELECT MAX(id) FROM mhl_countries);
 
 UPDATE mhl_districts
 SET country_ID=@new_id
