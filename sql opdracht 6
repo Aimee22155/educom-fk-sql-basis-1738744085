@@ -1,0 +1,106 @@
+-------------------------6.1------------------------------
+SELECT 
+    EXTRACT(YEAR FROM hitdate) AS jaar,
+    TO_CHAR(hitdate, 'TMMonth') AS maand,  -- Toont de maand in het Nederlands
+    COUNT(DISTINCT leverancier_id) AS aantal_leveranciers,
+    SUM(hitcount) AS totale_hitcount
+FROM 
+    hitcount
+GROUP BY 
+    EXTRACT(YEAR FROM hitdate),
+    TO_CHAR(hitdate, 'TMMonth')
+ORDER BY 
+    jaar, maand;
+
+SELECT 
+    gemeente,
+    leverancier_naam,
+    SUM(hitcount) AS totale_hitcount,
+    AVG(hitcount) OVER (PARTITION BY gemeente) AS gemiddelde_hitcount,
+    (SUM(hitcount) - AVG(hitcount) OVER (PARTITION BY gemeente)) AS verschil
+FROM 
+    hitcount
+JOIN 
+    leveranciers ON hitcount.leverancier_id = leveranciers.id
+WHERE 
+    SUM(hitcount) > AVG(hitcount) OVER (PARTITION BY gemeente)
+GROUP BY 
+    gemeente, leverancier_naam
+ORDER BY 
+    verschil DESC;
+
+SELECT 
+    rubriek_naam,
+    COUNT(DISTINCT leverancier_id) AS aantal_leveranciers
+FROM 
+    leveranciers
+GROUP BY 
+    rubriek_naam;
+
+SELECT 
+    rubriek_naam,
+    COALESCE(SUM(hitcount), 'Geen hits') AS totale_hitcount
+FROM 
+    leveranciers
+LEFT JOIN 
+    hitcount ON leveranciers.id = hitcount.leverancier_id
+GROUP BY 
+    rubriek_naam;
+
+
+-------------------------6.2------------------------------
+SELECT 
+    leverancier_id,
+    TO_CHAR(joindate, 'DD-MM-YYYY') AS joindate
+FROM 
+    leveranciers
+WHERE 
+    joindate BETWEEN (LAST_DAY(joindate) - INTERVAL '6 days') AND LAST_DAY(joindate);
+
+SELECT 
+    leverancier_id,
+    TO_CHAR(joindate, 'DD-MM-YYYY') AS joindate,
+    CURRENT_DATE - joindate AS aantal_dagen_lid
+FROM 
+    leveranciers
+ORDER BY 
+    aantal_dagen_lid ASC;
+
+SELECT 
+    TO_CHAR(joindate, 'Day') AS dagnaam,
+    COUNT(*) AS aantal_leden
+FROM 
+    leveranciers
+GROUP BY 
+    TO_CHAR(joindate, 'Day')
+ORDER BY 
+    dagnaam;
+
+SELECT 
+    EXTRACT(YEAR FROM joindate) AS jaar,
+    TO_CHAR(joindate, 'TMMonth') AS maandnaam,
+    COUNT(*) AS aantal_leden
+FROM 
+    leveranciers
+GROUP BY 
+    EXTRACT(YEAR FROM joindate),
+    TO_CHAR(joindate, 'TMMonth')
+ORDER BY 
+    jaar, maandnaam;
+
+
+-------------------------6.3------------------------------
+
+SELECT 
+    INITCAP(plaatsnaam) AS plaatsnaam
+FROM 
+    gemeentes;
+
+SELECT 
+    leverancier_naam,
+    REPLACE(REPLACE(REPLACE(leverancier_naam, '&lt;', '<'), '&gt;', '>'), '&amp;', '&') AS leverancier_naam_correct
+FROM 
+    leveranciers
+WHERE 
+    leverancier_naam LIKE '%&%'
+FETCH FIRST 25 ROWS ONLY;
