@@ -11,8 +11,7 @@ SET supplier_ID=@new_id
 WHERE mhl_contacts.supplier_ID NOT IN (SELECT id FROM mhl_suppliers)
 OR mhl_contacts.supplier_ID IS NULL;
 
-ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
+ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 1. Foreign Key voor Detaildefs*/
@@ -27,8 +26,8 @@ SET propertytype_ID = @new_id
 WHERE mhl_detaildefs.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
 OR mhl_detaildefs.propertytype_ID IS NULL;
 
-ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`group_ID`) REFERENCES `mhl_detailgroups`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION; 
-ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`group_ID`) REFERENCES `mhl_detailgroups`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; 
+ALTER TABLE `mhl_detaildefs` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 2. Foreign Key voor mhl_yn_properties:*/
@@ -45,7 +44,7 @@ SET propertytype_ID=@new_id
 WHERE mhl_yn_properties.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
 OR mhl_yn_properties.propertytype_ID IS NULL;
 
-ALTER TABLE `mhl_yn_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_yn_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 3. Foreign Key voor mhl_properties*/
@@ -54,7 +53,7 @@ SET propertytype_ID=@new_id
 WHERE mhl_properties.propertytype_ID NOT IN (SELECT id FROM mhl_propertytypes)
 OR mhl_properties.propertytype_ID IS NULL;
 
-ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`propertytype_ID`) REFERENCES `mhl_propertytypes`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; 
 
 /*mhl_suppliers:*/
 INSERT INTO mhl_suppliers (id)
@@ -63,7 +62,7 @@ FROM mhl_properties pro
 LEFT JOIN mhl_suppliers sup ON pro.supplier_ID = sup.id
 WHERE sup.id IS NULL;
 
-ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_properties` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 4. Foreign Key voor mhl_hitcount*/
@@ -74,7 +73,7 @@ FROM mhl_hitcount hit
 LEFT JOIN mhl_suppliers sup ON hit.supplier_ID = sup.id 
 WHERE sup.id IS NULL;
 
-ALTER TABLE `mhl_hitcount` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_hitcount` ADD FOREIGN KEY (`supplier_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 5. Foreign Key voor mhl_suppliers_mhl_rubriek_view*/
@@ -93,7 +92,7 @@ FROM mhl_suppliers_mhl_rubriek_view srv
 LEFT JOIN mhl_suppliers sup ON srv.mhl_suppliers_ID = sup.id 
 WHERE sup.id IS NULL;
 
-ALTER TABLE `mhl_suppliers_mhl_rubriek_view` ADD FOREIGN KEY (`mhl_suppliers_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_suppliers_mhl_rubriek_view` ADD FOREIGN KEY (`mhl_suppliers_ID`) REFERENCES `mhl_suppliers`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 /*______________________________________________________________________________________________
 6. Foreign Key voor mhl_suppliers (mhl_companies)*/
@@ -105,7 +104,7 @@ SET company=@new_id
 WHERE mhl_suppliers.company NOT IN (SELECT id FROM mhl_companies)
 OR mhl_suppliers.company IS NULL;
 
-ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`company`) REFERENCES `mhl_companies`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`company`) REFERENCES `mhl_companies`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 /*_________________________________________________________________________
 8. Foreign Key voor mhl_membertype:*/
@@ -118,7 +117,7 @@ SET membertype=@new_id
 WHERE mhl_suppliers.membertype NOT IN (SELECT id FROM mhl_membertypes)
 OR mhl_suppliers.membertype IS NULL;
 
-ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`membertype`) REFERENCES `mhl_membertypes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`membertype`) REFERENCES `mhl_membertypes`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*_______________________________________________________________________________________________
 9. Foreign Key voor mhl_suppliers (mhl_cities):*/
@@ -134,7 +133,7 @@ SET city_ID='5889'
 WHERE mhl_suppliers.city_ID NOT IN (SELECT id FROM mhl_cities)
 OR mhl_suppliers.city_ID IS NULL;
 
-ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`city_ID`) REFERENCES `mhl_cities`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`city_ID`) REFERENCES `mhl_cities`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE; 
 
 /*_______________________________________________________________________________________________
 10. Foreign Key voor mhl_city:*/
@@ -153,7 +152,7 @@ FROM mhl_cities cit
 LEFT JOIN mhl_communes com ON cit.commune_ID = com.id
 WHERE com.id IS NULL;
 
-ALTER TABLE `mhl_cities` ADD FOREIGN KEY (`commune_ID`) REFERENCES `mhl_communes`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_cities` ADD FOREIGN KEY (`commune_ID`) REFERENCES `mhl_communes`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 /*___________________________________________________________________________________________
 11. Foreign Key voor mhl_communes:*/
@@ -166,7 +165,8 @@ SET district_ID=@new_id
 WHERE mhl_communes.district_ID NOT IN (SELECT id FROM mhl_districts)
 OR mhl_communes.district_ID IS NULL;
 
-ALTER TABLE `mhl_communes` ADD FOREIGN KEY (`district_ID`) REFERENCES `mhl_districts`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_communes` ADD FOREIGN KEY (`district_ID`) REFERENCES `mhl_districts`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
 
 /*___________________________________________________________________________________________
 12. Foreign Key voor mhl_districts:*/
@@ -179,7 +179,7 @@ SET country_ID=@new_id
 WHERE mhl_districts.country_ID NOT IN (SELECT id FROM mhl_countries)
 OR mhl_districts.country_ID IS NULL;
 
-ALTER TABLE `mhl_districts` ADD FOREIGN KEY (`country_ID`) REFERENCES `mhl_countries`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_districts` ADD FOREIGN KEY (`country_ID`) REFERENCES `mhl_countries`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 /*___________________________________________________________________________________________
 13. Foreign Key voor mhl_suppliers (p_city_ID)*/
@@ -192,4 +192,4 @@ SET p_city_ID='5892'
 WHERE mhl_suppliers.p_city_ID NOT IN (SELECT id FROM mhl_cities)
 OR mhl_suppliers.p_city_ID IS NULL;
 
-ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`p_city_ID`) REFERENCES `mhl_cities`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_suppliers` ADD FOREIGN KEY (`p_city_ID`) REFERENCES `mhl_cities`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
