@@ -1,0 +1,116 @@
+-------------------4.1----------------------------------
+SELECT 
+	naam, 
+	straat, 
+	huisnummer, 
+	postcode
+FROM leveranciers
+WHERE City = 'Amsterdam';
+
+SELECT
+	naam, 
+	straat, 
+	huisnummer, 
+	postcode,
+	plaatsnaam
+FROM leveranciers
+WHERE Gemeente = 'Steenwijkerland';
+
+SELECT 
+	l.naam, 
+	l.straat, 
+	l.huisnummer, 
+	l.postcode, 
+	r.rubrieknaam
+FROM leveranciers l
+JOIN leverancier_rubrieken lr ON l.id = lr.leverancier_id
+JOIN rubrieken r ON lr.rubriek_id = r.id
+WHERE l.stad = 'Amsterdam' AND r.rubrieknaam LIKE 'drank%'
+ORDER BY r.rubrieknaam ASC, l.naam ASC;
+
+SELECT 
+	naam, 
+	straat, 
+	huisnummer, 
+	postcode
+FROM leveranciers
+WHERE specialistische_leverancier = 'Y' OR ook_voor_particulieren = 'Y';
+
+SELECT 
+	naam, 
+	straat, 
+	huisnummer, 
+	postcode, 
+	geo_latitude, 
+	geo_longitude
+FROM leveranciers
+ORDER BY geo_latitude DESC
+LIMIT 5;
+
+SELECT 
+	h.hitcount, 
+	l.leverancier, 
+	l.plaatsnaam, 
+	g.gemeente, 
+	p.provincie
+FROM hits h
+JOIN leveranciers l ON h.leverancier_id = l.id
+JOIN gemeenten g ON l.gemeente_id = g.id
+JOIN provincies p ON g.provincie_id = p.id
+WHERE h.jaar = 2014 AND h.maand = 1
+AND p.naam IN ('Noord-Brabant', 'Limburg', 'Zeeland');
+
+
+SELECT 
+	plaatsnaam, 
+	id, 
+	gemeente_id
+FROM plaatsen
+WHERE plaatsnaam IN (SELECT plaatsnaam FROM plaatsen GROUP BY plaatsnaam HAVING COUNT(*) > 1)
+ORDER BY plaatsnaam;
+
+
+SELECT
+	p.plaatsnaam, 
+	p.id, 
+	p.gemeente_id, 
+	g.gemeente, 
+	g.id AS gemeente_id
+FROM plaatsen p
+JOIN gemeenten g ON p.gemeente_id = g.id
+WHERE p.plaatsnaam IN (SELECT plaatsnaam FROM plaatsen GROUP BY plaatsnaam HAVING COUNT(*) > 1)
+ORDER BY p.plaatsnaam;
+
+
+-------------------4.2----------------------------------
+SELECT 
+	p.naam, 
+	p.gemeente_id
+FROM plaatsen p
+LEFT JOIN gemeenten g ON p.gemeente_id = g.id
+WHERE g.id IS NULL;
+
+SELECT 
+	p.naam AS plaatsnaam, 
+	COALESCE(g.naam, 'INVALID') AS gemeentenaam
+FROM plaatsen p
+LEFT JOIN gemeenten g ON p.gemeente_id = g.id;
+
+
+SELECT 
+  hoofdrubriek, 
+  subrubriek
+FROM hoofdrubrieken 
+ORDER BY h.naam ASC, s.naam ASC;
+
+
+SELECT lp.leverancier_id, 
+       p.property_naam, 
+       COALESCE(lp.waarde, 'NOT SET') AS waarde
+FROM leveranciers l
+JOIN leverancier_properties lp ON l.id = lp.leverancier_id
+JOIN properties p ON lp.property_id = p.id
+WHERE l.stad = 'Amsterdam'
+AND p.type = 'A';
+
+
