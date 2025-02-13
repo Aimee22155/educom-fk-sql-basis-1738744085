@@ -1,0 +1,67 @@
+-----------------------------3.1-------------------------------------------
+
+SELECT *
+FROM City;
+
+SELECT DISTINCT City
+FROM City;
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers;
+
+--------------------------3.2----------------------------------------------
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE City= 'Amsterdam';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Lidmaatschap= ('Gold', Silver', 'Bronze', 'GEEN INTERESSE');
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE City= 'Amsterdam' AND NOT Postbus= 'Amsterdam';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE City= 'Amsterdam' OR Postbus= 'Den Haag';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Huisnummer BETWEEN 10 AND 20;
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Huisnummer BETWEEN 10 AND 20 OR Huisnummer > 100;
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Leverancier LIKE 'a%';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Leverancier LIKE '%handel';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Leverancier LIKE '%groothandel%';
+
+SELECT name, straat, huisnummer, postcode
+FROM Leveranciers
+WHERE Leverancier LIKE '%&%;';
+
+------------------------3.3-------------------------------------
+SELECT DISTINCT stad 
+FROM leveranciers 
+ORDER BY stad ASC;
+
+SELECT * 
+FROM leveranciers 
+ORDER BY lidmaatschap ASC, stad ASC, postcode ASC;
+
+SELECT jaar, maand, hitcount
+FROM hits
+ORDER BY jaar ASC, maand ASC, hitcount DESC;
+
+
+
