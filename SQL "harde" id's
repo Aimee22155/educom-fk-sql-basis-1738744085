@@ -1,7 +1,7 @@
 /*_______________________________________________________________________________________________
 7. Foreign Key voor mhl_contacts:*/
 
-ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`department`) REFERENCES `mhl_departments`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `mhl_contacts` ADD FOREIGN KEY (`department`) REFERENCES `mhl_departments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 INSERT INTO mhl_suppliers () VALUES ();
 SET @new_id = LAST_INSERT_ID();
