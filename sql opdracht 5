@@ -1,0 +1,107 @@
+---------------------5.1---------------------------------------
+SELECT COUNT(*) AS aantal_records, 
+       MIN(hitcount) AS min_hitcount, 
+       MAX(hitcount) AS max_hitcount, 
+       AVG(hitcount) AS gem_hitcount, 
+       SUM(hitcount) AS totaal_hitcount
+FROM hitcount;
+
+SELECT jaar, 
+       COUNT(*) AS aantal_records, 
+       MIN(hitcount) AS min_hitcount, 
+       MAX(hitcount) AS max_hitcount, 
+       AVG(hitcount) AS gem_hitcount, 
+       SUM(hitcount) AS totaal_hitcount
+FROM hitcount
+GROUP BY jaar
+ORDER BY jaar ASC;
+
+SELECT jaar, maand, 
+       COUNT(*) AS aantal_records, 
+       MIN(hitcount) AS min_hitcount, 
+       MAX(hitcount) AS max_hitcount, 
+       AVG(hitcount) AS gem_hitcount, 
+       SUM(hitcount) AS totaal_hitcount
+FROM hitcount
+GROUP BY jaar, maand
+ORDER BY jaar ASC, maand ASC;
+
+SELECT l.naam AS leverancier, 
+       SUM(h.hitcount) AS totaal_hits, 
+       COUNT(DISTINCT h.maand) AS aantal_maanden, 
+       AVG(h.hitcount) AS gem_hitcount
+FROM hitcount h
+JOIN leveranciers l ON h.leverancier_id = l.id
+GROUP BY l.naam
+HAVING SUM(h.hitcount) > 100
+ORDER BY totaal_hits DESC;
+
+---------------------5.2---------------------------------------
+
+SELECT l.provincie, l.plaatsnaam, l.naam AS leverancier, 
+       COALESCE(l.postbusadres, l.vestigingsadres) AS adres, 
+       COALESCE(c.naam, 't.a.v. de directie') AS aanhef
+FROM leveranciers l
+LEFT JOIN contactpersonen c ON l.contactpersoon_id = c.id
+ORDER BY l.provincie ASC, l.plaatsnaam ASC, l.naam ASC;
+
+SELECT l.stad, 
+       SUM(CASE WHEN l.status = 'Gold' THEN 1 ELSE 0 END) AS Gold, 
+       SUM(CASE WHEN l.status = 'Silver' THEN 1 ELSE 0 END) AS Silver, 
+       SUM(CASE WHEN l.status = 'Bronze' THEN 1 ELSE 0 END) AS Bronze, 
+       SUM(CASE WHEN l.status NOT IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS Other
+FROM leveranciers l
+GROUP BY l.stad
+ORDER BY Gold DESC, Silver DESC, Bronze DESC, Other DESC;
+
+SELECT jaar, SUM(hitcount) AS totaal_hitcount
+FROM hitcount
+GROUP BY jaar
+ORDER BY jaar ASC;
+
+---------------------5.3---------------------------------------
+
+CREATE VIEW Directie AS
+SELECT 
+    c.supplier_ID, 
+    c.name AS contact, 
+    d.name AS department
+FROM mhl_contacts c
+JOIN mhl_departments d ON c.department_ID = d.ID
+WHERE d.name = 'Directie' 
+   OR c.contacttype LIKE '%directeur%';
+
+CREATE VIEW VERZENDLIJST AS
+SELECT 
+    s.ID, 
+    COALESCE(s.p_address, CONCAT(s.straat, ' ', s.huisnummer)) AS adres, 
+    COALESCE(s.p_postcode, s.postcode) AS postcode, 
+    COALESCE(c_p.name, c.name) AS stad
+FROM mhl_suppliers s
+LEFT JOIN mhl_cities c_p ON s.p_city_ID = c_p.ID
+LEFT JOIN mhl_cities c ON s.city_ID = c.ID;
+
+SELECT 
+    s.name AS leverancier, 
+    COALESCE(d.contact, 't.a.v. de directie') AS aanhef, 
+    v.adres, 
+    v.postcode, 
+    v.stad
+FROM VERZENDLIJST v
+JOIN mhl_suppliers s ON v.ID = s.ID
+LEFT JOIN DIRECTIE d ON s.ID = d.supplier_ID
+ORDER BY v.stad ASC, s.name ASC;
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
