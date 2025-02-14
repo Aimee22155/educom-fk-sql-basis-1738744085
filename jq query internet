@@ -1,0 +1,44 @@
+jq '.[] | select(.year == 1970) | {country: .country, population_density: (.population / .area)}' world-population.json > ~/population_density_1970.json
+
+jq 'group_by(.continent) | map({
+  continent: .[0].continent,
+  absolute_growth: (map(select(.year == 2022)) | map(.population) | add) - 
+                    (map(select(.year == 1970)) | map(.population) | add)
+})' world-population.json > ~/absolute_growth_per_continent.json
+
+jq 'group_by(.continent) | map({
+  continent: .[0].continent,
+  population_per_year: (group_by(.year) | map({
+    year: .[0].year,
+    total_population: (map(.population) | add)
+  }))
+})' world-population.json > ~/population_per_continent_year.json
+
+jq 'group_by(.year) | map({
+  year: .[0].year,
+  continents: (
+    group_by(.continent) | map({
+      continent: .[0].continent,
+      percentage_of_world_population: 
+        (map(.population) | add) * 100.0 / 
+        (map(.population) | add | add)
+    })
+  )
+})' world-population.json > ~/percentage_of_world_population_per_continent.json
+
+jq 'group_by(.continent) | map({
+  continent: .[0].continent,
+  growth_percentage: 
+    (
+      (map(select(.year == 2022)) | map(.population) | add) - 
+      (map(select(.year == 1970)) | map(.population) | add)
+    ) * 100.0 / 
+    (map(select(.year == 1970)) | map(.population) | add)
+})' world-population.json > ~/growth_percentage_per_continent.json
+
+
+jq -r '.[] | [.country, .population_density] | @csv' ~/population_density_1970.json > ~/population_density_1970.csv
+jq -r '.[] | [.continent, .absolute_growth] | @csv' ~/absolute_growth_per_continent.json > ~/absolute_growth_per_continent.csv
+jq -r '.[] | [.continent, (.population_per_year | map([.year, .total_population]) | join(", "))] | @csv' ~/population_per_continent_year.json > ~/population_per_continent_year.csv
+jq -r '.[] | [.year, (.continents | map([.continent, .percentage_of_world_population]) | join(", "))] | @csv' ~/percentage_of_world_population_per_continent.json > ~/percentage_of_world_population_per_continent.csv
+jq -r '.[] | [.continent, .growth_percentage] | @csv' ~/growth_percentage_per_continent.json > ~/growth_percentage_per_continent.csv
