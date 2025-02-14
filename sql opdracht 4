@@ -1,11 +1,7 @@
 -------------------4.1----------------------------------
-SELECT 
-	naam, 
-	straat, 
-	huisnummer, 
-	postcode
-FROM leveranciers
-WHERE City = 'Amsterdam';
+SELECT l.name, l.straat, l.huisnr, l.postcode 
+FROM  levernaciers l
+JOIN mhl_cities c ON l.city_ID=c.ID AND c.name="Amsterdam"
 
 SELECT
 	naam, 
@@ -34,7 +30,7 @@ SELECT
 	huisnummer, 
 	postcode
 FROM leveranciers
-WHERE specialistische_leverancier = 'Y' OR ook_voor_particulieren = 'Y';
+WHERE name="specialistische leverancier" OR name="ook voor particulieren";
 
 SELECT 
 	naam, 
@@ -60,7 +56,6 @@ JOIN provincies p ON g.provincie_id = p.id
 WHERE h.jaar = 2014 AND h.maand = 1
 AND p.naam IN ('Noord-Brabant', 'Limburg', 'Zeeland');
 
-
 SELECT 
 	plaatsnaam, 
 	id, 
@@ -68,7 +63,6 @@ SELECT
 FROM plaatsen
 WHERE plaatsnaam IN (SELECT plaatsnaam FROM plaatsen GROUP BY plaatsnaam HAVING COUNT(*) > 1)
 ORDER BY plaatsnaam;
-
 
 SELECT
 	p.plaatsnaam, 
@@ -81,7 +75,6 @@ JOIN gemeenten g ON p.gemeente_id = g.id
 WHERE p.plaatsnaam IN (SELECT plaatsnaam FROM plaatsen GROUP BY plaatsnaam HAVING COUNT(*) > 1)
 ORDER BY p.plaatsnaam;
 
-
 -------------------4.2----------------------------------
 SELECT 
 	p.naam, 
@@ -92,17 +85,15 @@ WHERE g.id IS NULL;
 
 SELECT 
 	p.naam AS plaatsnaam, 
-	COALESCE(g.naam, 'INVALID') AS gemeentenaam
+	COALESCE(g.naam, 'INVALID') AS gemeentenaam		-- COALESCE= returns the first non-null value in a list. --
 FROM plaatsen p
 LEFT JOIN gemeenten g ON p.gemeente_id = g.id;
-
 
 SELECT 
   hoofdrubriek, 
   subrubriek
 FROM hoofdrubrieken 
 ORDER BY h.naam ASC, s.naam ASC;
-
 
 SELECT lp.leverancier_id, 
        p.property_naam, 
