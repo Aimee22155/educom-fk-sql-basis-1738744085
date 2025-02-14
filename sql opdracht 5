@@ -1,30 +1,29 @@
 ---------------------5.1---------------------------------------
-SELECT COUNT(*) AS aantal_records, 
-       MIN(hitcount) AS min_hitcount, 
-       MAX(hitcount) AS max_hitcount, 
-       AVG(hitcount) AS gem_hitcount, 
-       SUM(hitcount) AS totaal_hitcount
-FROM hitcount;
+SELECT
+    COUNT(hitcount),
+    AVG(hitcount),
+    MIN(hitcount),
+    MAX(hitcount),
+    SUM(hitcount)
+FROM mhl_hitcount
 
-SELECT jaar, 
-       COUNT(*) AS aantal_records, 
-       MIN(hitcount) AS min_hitcount, 
-       MAX(hitcount) AS max_hitcount, 
-       AVG(hitcount) AS gem_hitcount, 
-       SUM(hitcount) AS totaal_hitcount
-FROM hitcount
-GROUP BY jaar
-ORDER BY jaar ASC;
+SELECT
+    COUNT(hitcount),
+    AVG(hitcount),
+    MIN(hitcount),
+    MAX(hitcount),
+    SUM(hitcount)
+FROM mhl_hitcount
+GROUP BY year
 
-SELECT jaar, maand, 
-       COUNT(*) AS aantal_records, 
-       MIN(hitcount) AS min_hitcount, 
-       MAX(hitcount) AS max_hitcount, 
-       AVG(hitcount) AS gem_hitcount, 
-       SUM(hitcount) AS totaal_hitcount
-FROM hitcount
-GROUP BY jaar, maand
-ORDER BY jaar ASC, maand ASC;
+SELECT
+    COUNT(hitcount),
+    AVG(hitcount),
+    MIN(hitcount),
+    MAX(hitcount),
+    SUM(hitcount)
+FROM mhl_hitcount
+GROUP BY year, month
 
 SELECT l.naam AS leverancier, 
        SUM(h.hitcount) AS totaal_hits, 
@@ -38,12 +37,24 @@ ORDER BY totaal_hits DESC;
 
 ---------------------5.2---------------------------------------
 
-SELECT l.provincie, l.plaatsnaam, l.naam AS leverancier, 
-       COALESCE(l.postbusadres, l.vestigingsadres) AS adres, 
-       COALESCE(c.naam, 't.a.v. de directie') AS aanhef
-FROM leveranciers l
-LEFT JOIN contactpersonen c ON l.contactpersoon_id = c.id
-ORDER BY l.provincie ASC, l.plaatsnaam ASC, l.naam ASC;
+SELECT
+    S.name AS leverancier,
+    IFNULL(C.name, 'tav de directie') AS aanhef,
+    IF (p_address<>'', p_address, CONCAT(straat, ' ', huisnr)) AS adres,
+    IF (p_address<>'', p_postcode, postcode) AS postcode,
+    IF (p_address<>'', P.name, V.name) AS stad,
+    IF (p_address<>'', PP.name, VP.name) AS provincie
+FROM mhl_suppliers AS S
+LEFT JOIN mhl_contacts AS C ON S.ID=C.supplier_ID AND C.department=3
+LEFT JOIN mhl_cities AS P ON P.ID=S.p_city_ID
+LEFT JOIN mhl_communes AS PC ON PC.ID=P.commune_ID
+LEFT JOIN mhl_districts AS PP ON PP.ID=PC.district_ID
+LEFT JOIN mhl_cities AS V ON V.ID=S.city_ID
+LEFT JOIN mhl_communes AS VC ON VC.ID=V.commune_ID
+LEFT JOIN mhl_districts AS VP ON VP.ID=VC.district_ID
+/* optioneel filteren */
+WHERE postcode <> ''
+ORDER BY provincie, stad, leverancier
 
 SELECT l.stad, 
        SUM(CASE WHEN l.status = 'Gold' THEN 1 ELSE 0 END) AS Gold, 
@@ -54,10 +65,15 @@ FROM leveranciers l
 GROUP BY l.stad
 ORDER BY Gold DESC, Silver DESC, Bronze DESC, Other DESC;
 
-SELECT jaar, SUM(hitcount) AS totaal_hitcount
-FROM hitcount
-GROUP BY jaar
-ORDER BY jaar ASC;
+SELECT
+    year AS Jaar,
+    SUM(IF (month IN ('1','2','3'),hitcount,0) ) AS 'Eerste kwartaal',
+    SUM(IF (month IN ('4','5','6'),hitcount,0) ) AS 'Tweede kwartaal',
+    SUM(IF (month IN ('7','8','9'),hitcount,0) ) AS 'Derde kwartaal',
+    SUM(IF (month IN ('10','11','12'), hitcount, 0)) AS 'Vierde kwartaal',
+    SUM(hitcount) AS Totaal
+FROM mhl_hitcount
+GROUP BY year
 
 ---------------------5.3---------------------------------------
 
