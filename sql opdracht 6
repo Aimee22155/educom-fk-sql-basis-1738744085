@@ -1,16 +1,31 @@
 -------------------------6.1------------------------------
-SELECT 
-    EXTRACT(YEAR FROM hitdate) AS jaar,
-    TO_CHAR(hitdate, 'TMMonth') AS maand,  -- Toont de maand in het Nederlands
-    COUNT(DISTINCT leverancier_id) AS aantal_leveranciers,
-    SUM(hitcount) AS totale_hitcount
-FROM 
-    hitcount
-GROUP BY 
-    EXTRACT(YEAR FROM hitdate),
-    TO_CHAR(hitdate, 'TMMonth')
-ORDER BY 
-    jaar, maand;
+CREATE VIEW months (id, name) AS 
+  SELECT 1,'Januari'
+  UNION SELECT 2,'Februari'
+  UNION SELECT 3,'Maart'
+  UNION SELECT 4,'April'
+  UNION SELECT 5,'Mei'
+  UNION SELECT 6,'Juni'
+  UNION SELECT 7,'Juli'
+  UNION SELECT 8,'Augustus'
+  UNION SELECT 9,'September'
+  UNION SELECT 10, 'Oktober'
+  UNION SELECT 11,'November'
+  UNION SELECT 12,'December';
+
+SELECT
+    year as jaar,
+    months.name as maand,
+    num_sup as 'aantal leveranciers',
+    total_hit as 'totaal aantal hits'
+FROM (
+    SELECT year, month, COUNT(supplier_ID) as num_sup, SUM(hitcount) AS total_hit 
+    FROM mhl_hitcount 
+    GROUP BY year, month 
+    ORDER BY year, month 
+) AS totals
+JOIN months ON month=months.id
+ORDER BY year DESC, months.name ASC
 
 SELECT 
     gemeente,
@@ -32,75 +47,57 @@ ORDER BY
 SELECT 
     rubriek_naam,
     COUNT(DISTINCT leverancier_id) AS aantal_leveranciers
-FROM 
-    leveranciers
-GROUP BY 
-    rubriek_naam;
+FROM leveranciers
+GROUP BY rubriek_naam;
 
 SELECT 
     rubriek_naam,
     COALESCE(SUM(hitcount), 'Geen hits') AS totale_hitcount
-FROM 
-    leveranciers
-LEFT JOIN 
-    hitcount ON leveranciers.id = hitcount.leverancier_id
-GROUP BY 
-    rubriek_naam;
-
+FROM leveranciers
+LEFT JOIN hitcount ON leveranciers.id = hitcount.leverancier_id
+GROUP BY rubriek_naam;
 
 -------------------------6.2------------------------------
 SELECT 
     leverancier_id,
     TO_CHAR(joindate, 'DD-MM-YYYY') AS joindate
-FROM 
-    leveranciers
-WHERE 
-    joindate BETWEEN (LAST_DAY(joindate) - INTERVAL '6 days') AND LAST_DAY(joindate);
+FROM leveranciers
+WHERE joindate BETWEEN (LAST_DAY(joindate) - INTERVAL '6 days') AND LAST_DAY(joindate);
 
 SELECT 
     leverancier_id,
     TO_CHAR(joindate, 'DD-MM-YYYY') AS joindate,
     CURRENT_DATE - joindate AS aantal_dagen_lid
-FROM 
-    leveranciers
-ORDER BY 
-    aantal_dagen_lid ASC;
+FROM leveranciers
+ORDER BY aantal_dagen_lid ASC;
 
 SELECT 
     TO_CHAR(joindate, 'Day') AS dagnaam,
     COUNT(*) AS aantal_leden
-FROM 
-    leveranciers
-GROUP BY 
-    TO_CHAR(joindate, 'Day')
-ORDER BY 
-    dagnaam;
+FROM leveranciers
+GROUP BY TO_CHAR(joindate, 'Day')
+ORDER BY dagnaam;
 
 SELECT 
     EXTRACT(YEAR FROM joindate) AS jaar,
     TO_CHAR(joindate, 'TMMonth') AS maandnaam,
     COUNT(*) AS aantal_leden
-FROM 
-    leveranciers
-GROUP BY 
-    EXTRACT(YEAR FROM joindate),
-    TO_CHAR(joindate, 'TMMonth')
-ORDER BY 
-    jaar, maandnaam;
-
-
+FROM  leveranciers
+GROUP BY EXTRACT(YEAR FROM joindate), TO_CHAR(joindate, 'TMMonth')
+ORDER BY jaar, maandnaam;
 -------------------------6.3------------------------------
 
 SELECT 
     INITCAP(plaatsnaam) AS plaatsnaam
-FROM 
-    gemeentes;
+FROM gemeentes;
 
 SELECT 
     leverancier_naam,
-    REPLACE(REPLACE(REPLACE(leverancier_naam, '&lt;', '<'), '&gt;', '>'), '&amp;', '&') AS leverancier_naam_correct
-FROM 
-    leveranciers
-WHERE 
-    leverancier_naam LIKE '%&%'
-FETCH FIRST 25 ROWS ONLY;
+    REPLACE (
+            REPLACE (
+                    REPLACE (leverancier_naam, '&lt;', '<'),
+                    '&gt;', '>')
+            , '&amp;', '&') 
+    AS leverancier_naam_correct
+FROM leveranciers
+WHERE leverancier_naam LIKE '%&%', FETCH FIRST 25 ROWS ONLY;
